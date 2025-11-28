@@ -50,9 +50,9 @@
 
 .icon-btn {
     width: 200px;
-    height: 100px;
+    height: 160px;
     border-radius: 12px;
-    background: rgba(255,255,255,0.95);
+    background: rgb(255 255 255 / 0%);
     border: none;
     display: flex;
     flex-direction: column;
@@ -69,8 +69,8 @@
 
 
 .icon-btn img {
-    width: 82px;
-    height: 62px;
+    width: 150px;
+    height: 100px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 8px;
