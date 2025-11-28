@@ -6,11 +6,18 @@ interface ProductCustomizerProps {
     product: Product;
     onAddToCart: (product: Product, selectedElements: SelectedElement[]) => void;
     onClose: () => void;
+    initialSelectedElements?: SelectedElement[];
 }
 
-const ProductCustomizer: React.FC<ProductCustomizerProps> = ({ product, onAddToCart, onClose }) => {
+const ProductCustomizer: React.FC<ProductCustomizerProps> = ({ product, onAddToCart, onClose, initialSelectedElements }) => {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [selectedElements, setSelectedElements] = useState<SelectedElement[]>([]);
+
+    // Initialize selectedElements when product or initialSelectedElements changes
+    React.useEffect(() => {
+        setSelectedElements(initialSelectedElements ?? []);
+        setCurrentStepIndex(0);
+    }, [product, initialSelectedElements]);
 
     const steps = product.steps || [];
     const currentStep = steps[currentStepIndex];

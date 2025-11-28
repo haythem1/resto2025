@@ -1,9 +1,12 @@
-.category-sidebar {
-    width: 280px;
+.category-sidebar-kiosk {
+    width: 240px;
     height: 100vh;
-    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-    padding: 2rem 1rem;
-    overflow-y: auto;
+    background: linear-gradient(180deg, #f9de1f 0%, #333333 100%);
+    padding: 1.2rem 0.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .category-sidebar h2 {
@@ -15,76 +18,81 @@
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.categories-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+
+.sidebar-viewport {
+    width: 100%;
+    overflow-y: auto; /* allow scroll instead of arrows */
+    display: block;
+    -webkit-overflow-scrolling: touch;
+    overflow: hidden; /* hide native scrollbar; we'll show custom controls when needed */
 }
 
-.category-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    padding: 0.8rem;
-    border-radius: 15px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    position: relative;
-    backdrop-filter: blur(10px);
+.sidebar-list-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 12px;
+    transition: transform 240ms cubic-bezier(.16,.98,.5,1);
+    max-height: calc(var(--visible-count) * 100px);
+}
+
+.sidebar-list-inner.centered {
+    justify-content: center;
+    height: 100%;
+}
+
+.sidebar-list-inner.overflow {
+    overflow-y: auto; /* enable scrolling when overflow */
+    scrollbar-width: none; /* hide firefox scrollbar */
+}
+
+.sidebar-list-inner.overflow::-webkit-scrollbar { display: none; } /* hide webkit scrollbar */
+
+.icon-btn {
+    width: 200px;
+    height: 100px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.95);
+    border: none;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    height: auto;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.18s cubic-bezier(.16,.98,.5,1), box-shadow 0.18s ease;
+    padding: 6px;
+    text-align: center;
 }
 
-.category-btn-image {
-    width: 60px;
-    height: 60px;
+.sidebar-arrow-controls { position: absolute; top: 12px; right: 12px; display:flex; flex-direction:column; gap:8px; }
+.scroll-small { width: 36px; height: 28px; border-radius: 8px; border:none; background:rgba(255,255,255,0.9); cursor:pointer; font-weight:800; box-shadow:0 6px 18px rgba(0,0,0,0.08); }
+
+
+.icon-btn img {
+    width: 82px;
+    height: 62px;
     object-fit: cover;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    margin-bottom: 8px;
 }
 
-.category-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-3px);
-    border-color: rgba(255, 255, 255, 0.5);
+
+.icon-btn:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+
+.icon-btn.active {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+    outline: 3px solid rgba(255,255,255,0.6);
 }
 
-.category-btn.active {
-    background: white;
-    color: #667eea;
-    border-color: white;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    transform: scale(1.05);
-}
 
-.category-btn.active::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border-radius: 16px;
-    background: linear-gradient(45deg, #ff6b6b, #667eea);
-    z-index: -1;
-    opacity: 0.5;
-    filter: blur(8px);
-    animation: pulse-soft 2s infinite;
-}
+.icon-placeholder { font-size: 2rem; margin-bottom: 8px; }
 
-.category-name {
-    display: block;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.cat-label {
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .category-promo-badge {
@@ -100,20 +108,9 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.category-sidebar::-webkit-scrollbar {
-    width: 6px;
-}
 
-.category-sidebar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-}
+.sidebar-footer { color: rgba(255,255,255,0.9); padding: 0.6rem 0; }
 
-.category-sidebar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-}
+/* scroll controls removed per request */
 
-.category-sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
+.logo-area { display: none; }

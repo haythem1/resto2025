@@ -37,6 +37,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
                     )}
                 </div>
             </div>
+            <button className="product-add-btn" onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                +
+            </button>
         </div>
     );
 };

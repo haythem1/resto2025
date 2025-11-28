@@ -10,7 +10,7 @@
 
 .cart-header {
     padding: 2rem 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(180deg, #f9de1f 0%, #333333 100%);
     color: white;
 }
 
@@ -85,7 +85,7 @@
 
 .item-price {
     font-size: 1rem;
-    color: #667eea;
+    color: #000;
     font-weight: 600;
     margin: 0;
 }
@@ -100,7 +100,7 @@
 }
 
 .item-controls button {
-    background: #667eea;
+    background: #000;
     color: white;
     border: none;
     width: 30px;
@@ -135,6 +135,25 @@
     opacity: 1;
 }
 
+.item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-left: 0.5rem;
+}
+
+.edit-btn {
+    background: transparent;
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 0.45rem 0.7rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-weight: 600;
+}
+
+.edit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+
 .cart-footer {
     padding: 1.5rem;
     border-top: 2px solid #e0e0e0;
@@ -153,12 +172,12 @@
 .total-amount {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #667eea;
+    color: #000;
 }
 
 .checkout-btn {
     width: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(180deg, #f9de1f 0%, #333333 100%);
     color: white;
     border: none;
     padding: 1.2rem;

@@ -1,0 +1,36 @@
+.bottom-order-bar {
+    position: fixed;
+    left: 110px; /* to avoid the left sidebar */
+    right: 30px;
+    bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    pointer-events: none; /* let children decide */
+}
+
+.language-flags .flag {
+    font-size: 1.4rem;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+.order-button-area { pointer-events: all; }
+
+.view-order-btn {
+    background: linear-gradient(180deg, #f9de1f 0%, #333333 100%);
+    color: black;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 12px 40px rgba(255,138,128,0.25);
+    cursor: pointer;
+}
+
+.order-total { font-size: 1rem; opacity: 0.9; }

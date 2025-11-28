@@ -1,7 +1,7 @@
 .sale-mode-selection {
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #000 0%, #764ba2 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,7 +98,7 @@
 
 .back-btn:hover {
     background: white;
-    color: #667eea;
+    color: #000;
 }
 
 @media (max-width: 768px) {

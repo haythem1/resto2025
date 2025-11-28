@@ -6,10 +6,11 @@ interface CartProps {
     items: CartItem[];
     onUpdateQuantity: (index: number, quantity: number) => void;
     onRemoveItem: (index: number) => void;
+    onEditItem?: (index: number) => void;
     saleMode: SaleMode;
 }
 
-const Cart: React.FC<CartProps> = ({ items, onUpdateQuantity, onRemoveItem, saleMode }) => {
+const Cart: React.FC<CartProps> = ({ items, onUpdateQuantity, onRemoveItem, onEditItem, saleMode }) => {
     const total = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
     return (
@@ -46,9 +47,16 @@ const Cart: React.FC<CartProps> = ({ items, onUpdateQuantity, onRemoveItem, sale
                                 <span>{item.quantity}</span>
                                 <button onClick={() => onUpdateQuantity(index, item.quantity + 1)}>+</button>
                             </div>
-                            <button className="remove-btn" onClick={() => onRemoveItem(index)}>
-                                🗑️
-                            </button>
+                            <div className="item-actions">
+                                {item.product.steps && item.product.steps.length > 0 && onEditItem && (
+                                    <button className="edit-btn" onClick={() => onEditItem(index)}>
+                                        ✏️ Modifier
+                                    </button>
+                                )}
+                                <button className="remove-btn" onClick={() => onRemoveItem(index)}>
+                                    🗑️
+                                </button>
+                            </div>
                         </div>
                     ))
                 )}
