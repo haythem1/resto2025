@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Upload Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        input, select, button {
+            margin: 10px 0;
+            padding: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .image-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .image-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .success {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>🖼️ Test Upload Images - API Restaurant</h1>
+
+    <!-- Upload -->
+    <div class="section">
+        <h2>1. Upload une image</h2>
+        <select id="uploadType">
+            <option value="categories">Catégories</option>
+            <option value="produits">Produits</option>
+            <option value="elements">Elements</option>
+        </select>
+        <br>
+        <input type="file" id="fileInput" accept="image/*">
+        <br>
+        <button onclick="uploadImage()">📤 Upload</button>
+    </div>
+
+    <!-- Liste -->
+    <div class="section">
+        <h2>2. Lister les images</h2>
+        <select id="listType">
+            <option value="categories">Catégories</option>
+            <option value="produits">Produits</option>
+            <option value="elements">Elements</option>
+        </select>
+        <button onclick="listImages()">📋 Lister</button>
+        <div id="imagesList" class="images"></div>
+    </div>
+
+    <!-- Résultat -->
+    <div id="result"></div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+
+        function showResult(message, type = 'success') {
+            const result = document.getElementById('result');
+            result.className = type;
+            result.innerHTML = `<pre>${JSON.stringify(message, null, 2)}</pre>`;
+        }
+
+        async function uploadImage() {
+            const fileInput = document.getElementById('fileInput');
+            const type = document.getElementById('uploadType').value;
+
+            if (!fileInput.files.length) {
+                showResult({ error: 'Veuillez sélectionner un fichier' }, 'error');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch(`${API_URL}/api/upload/${type}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult(data, 'success');
+                    // Afficher l'image uploadée
+                    const img = document.createElement('img');
+                    img.src = `${API_URL}${data.url}`;
+                    img.style.maxWidth = '300px';
+                    img.style.marginTop = '10px';
+                    document.getElementById('result').appendChild(img);
+                } else {
+                    showResult(data, 'error');
+                }
+            } catch (error) {
+                showResult({ error: error.message }, 'error');
+            }
+        }
+
+        async function listImages() {
+            const type = document.getElementById('listType').value;
+            const imagesList = document.getElementById('imagesList');
+
+            try {
+                const response = await fetch(`${API_URL}/api/upload/${type}`);
+                const data = await response.json();
+
+                if (response.ok && data.images.length > 0) {
+                    imagesList.innerHTML = '';
+                    data.images.forEach(img => {
+                        const div = document.createElement('div');
+                        div.className = 'image-item';
+                        div.innerHTML = `
+                            <img src="${API_URL}${img.url}" alt="${img.filename}">
+                            <p><strong>${img.filename}</strong></p>
+                            <button onclick="deleteImage('${type}', '${img.filename}')" style="background: #dc3545;">
+                                🗑️ Supprimer
+                            </button>
+                        `;
+                        imagesList.appendChild(div);
+                    });
+                    showResult({ message: `${data.images.length} image(s) trouvée(s)` }, 'success');
+                } else if (data.images.length === 0) {
+                    imagesList.innerHTML = '<p>Aucune image trouvée</p>';
+                    showResult({ message: 'Aucune image dans ce dossier' }, 'success');
+                }
+            } catch (error) {
+                showResult({ error: error.message }, 'error');
+            }
+        }
+
+        async function deleteImage(type, filename) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer cette image ?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/upload/${type}/${filename}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult(data, 'success');
+                    listImages(); // Rafraîchir la liste
+                } else {
+                    showResult(data, 'error');
+                }
+            } catch (error) {
+                showResult({ error: error.message }, 'error');
+            }
+        }
+
+        // Charger les images au démarrage
+        window.onload = () => {
+            listImages();
+        };
+    </script>
+</body>
+</html>

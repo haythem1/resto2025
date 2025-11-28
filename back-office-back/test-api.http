@@ -1,0 +1,170 @@
+### Variables
+@baseUrl = http://localhost:3001/api
+
+### Test la connexion
+GET http://localhost:3001
+
+### ==================== CATÉGORIES ====================
+
+### Récupérer toutes les catégories
+GET {{baseUrl}}/categories
+
+### Récupérer les catégories racines
+GET {{baseUrl}}/categories/racine
+
+### Récupérer une catégorie par ID
+GET {{baseUrl}}/categories/1
+
+### Récupérer les sous-catégories d'une catégorie
+GET {{baseUrl}}/categories/1/sous-categories
+
+### Créer une nouvelle catégorie racine
+POST {{baseUrl}}/categories
+Content-Type: application/json
+
+{
+  "nom": "Salades",
+  "image": "salades.jpg",
+  "promo": false,
+  "ordre": 5
+}
+
+### Créer une sous-catégorie
+POST {{baseUrl}}/categories
+Content-Type: application/json
+
+{
+  "id_parent": 1,
+  "nom": "Premium Burgers",
+  "promo": true,
+  "ordre": 2
+}
+
+### Modifier une catégorie
+PUT {{baseUrl}}/categories/1
+Content-Type: application/json
+
+{
+  "nom": "Burgers Modifié",
+  "image": "categorie_burger.jpeg",
+  "promo": true,
+  "ordre": 1
+}
+
+### Supprimer une catégorie
+DELETE {{baseUrl}}/categories/5
+
+### ==================== PRODUITS ====================
+
+### Récupérer les produits d'une catégorie
+GET {{baseUrl}}/categories/11/produits
+
+### Récupérer un produit par ID
+GET {{baseUrl}}/produits/1
+
+### Créer un nouveau produit
+POST {{baseUrl}}/produits
+Content-Type: application/json
+
+{
+  "categorie_id": 11,
+  "nom": "Double Cheese Burger",
+  "image": "double-cheese.jpg",
+  "prix": 22.50,
+  "promo": true,
+  "description": "Double portion de fromage et viande",
+  "ordre": 2
+}
+
+### Modifier un produit
+PUT {{baseUrl}}/produits/1
+Content-Type: application/json
+
+{
+  "nom": "Cheeseburger Classic",
+  "image": "Cheeseburger.jpeg",
+  "prix": 19.90,
+  "promo": true,
+  "description": "Un délicieux burger classique revisité",
+  "ordre": 1
+}
+
+### Supprimer un produit
+DELETE {{baseUrl}}/produits/10
+
+### ==================== STEPS ====================
+
+### Récupérer les steps d'un produit
+GET {{baseUrl}}/produits/1/steps
+
+### Créer un nouveau step
+POST {{baseUrl}}/steps
+Content-Type: application/json
+
+{
+  "produit_id": 1,
+  "type": "taille",
+  "nom": "Choisissez la taille",
+  "description": "Sélectionnez la taille de votre burger",
+  "min_selection": 1,
+  "max_selection": 1,
+  "required": true,
+  "ordre": 6
+}
+
+### Modifier un step
+PUT {{baseUrl}}/steps/1
+Content-Type: application/json
+
+{
+  "type": "composition_base",
+  "nom": "Composition de base modifiée",
+  "description": "Personnalisez votre burger",
+  "min_selection": 0,
+  "max_selection": 5,
+  "required": false,
+  "ordre": 1
+}
+
+### Supprimer un step
+DELETE {{baseUrl}}/steps/10
+
+### ==================== STEP ELEMENTS ====================
+
+### Récupérer les éléments d'un step
+GET {{baseUrl}}/steps/1/elements
+
+### Créer un nouvel élément
+POST {{baseUrl}}/step-elements
+Content-Type: application/json
+
+{
+  "step_id": 1,
+  "nom": "Bacon",
+  "image": "bacon.jpg",
+  "description": "Bacon croustillant",
+  "prix": 2.5,
+  "included": false,
+  "ordre": 4
+}
+
+### Modifier un élément
+PUT {{baseUrl}}/step-elements/1
+Content-Type: application/json
+
+{
+  "nom": "Double Fromage",
+  "image": "fromage.jpeg",
+  "description": "Double portion de fromage cheddar",
+  "prix": 3.0,
+  "included": true,
+  "ordre": 1
+}
+
+### Supprimer un élément
+DELETE {{baseUrl}}/step-elements/50
+
+### ==================== MENU COMPLET ====================
+
+### Récupérer le menu complet avec toute la hiérarchie
+GET {{baseUrl}}/menu-complet

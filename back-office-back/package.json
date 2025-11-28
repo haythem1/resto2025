@@ -1,0 +1,34 @@
+{
+  "name": "back-office-back",
+  "version": "1.0.0",
+  "description": "API Backend pour la gestion du menu restaurant",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "migrate": "node database/migrate.js",
+    "migrate:orders": "node database/migrate_orders.js",
+    "seed": "node database/seed.js"
+  },
+  "keywords": [
+    "restaurant",
+    "menu",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/multer": "^2.0.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "joi": "^18.0.2",
+    "multer": "^2.0.2",
+    "pg": "^8.11.3",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
