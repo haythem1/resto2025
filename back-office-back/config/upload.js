@@ -6,7 +6,13 @@ const fs = require('fs');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // Déterminer le dossier en fonction du type
-    const type = req.params.type || 'general';
+    let type = req.params.type || 'general';
+
+    // Rediriger les uploads d'éléments vers le dossier produits
+    if (type === 'elements') {
+      type = 'produits';
+    }
+
     const uploadPath = path.join(__dirname, '..', 'uploads', type);
 
     // Créer le dossier s'il n'existe pas

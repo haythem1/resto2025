@@ -1,0 +1,119 @@
+.category-sidebar {
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem 1rem;
+    overflow-y: auto;
+}
+
+.category-sidebar h2 {
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.category-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.8rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    height: auto;
+}
+
+.category-btn-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.category-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.category-btn.active {
+    background: white;
+    color: #667eea;
+    border-color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.category-btn.active::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 16px;
+    background: linear-gradient(45deg, #ff6b6b, #667eea);
+    z-index: -1;
+    opacity: 0.5;
+    filter: blur(8px);
+    animation: pulse-soft 2s infinite;
+}
+
+.category-name {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.category-promo-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #ff6b6b;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.category-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.category-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.category-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.category-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}

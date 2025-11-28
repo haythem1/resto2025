@@ -24,6 +24,9 @@ export interface Produit {
   image: string;
   prix: number;
   promo: boolean;
+  promo_type?: 'percentage' | 'fixed_price' | null;
+  promo_value?: number | null;
+  prix_promo?: number;
   description?: string;
   category_id?: number;
   steps: Step[];
@@ -34,6 +37,8 @@ export interface Categorie {
   nom: string;
   image?: string;
   promo?: boolean;
+  promo_type?: 'percentage' | 'fixed_price' | null;
+  promo_value?: number | null;
   prix?: any;
   description?: string;
   steps?: Step[];

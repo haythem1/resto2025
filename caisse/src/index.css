@@ -229,6 +229,53 @@ body.noscroll {
   font-weight: 700;
   color: #198754;
   text-align: center;
+  margin: 0;
+}
+
+/* Promotional pricing styles */
+.product-price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.product-price-promo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #198754;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+  margin: 0;
+}
+
+.product-price-promo::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: #198754;
+  border-radius: 1px;
+}
+
+.product-price-original {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6c757d;
+  text-decoration: line-through;
+  text-align: center;
+  margin: 0;
+}
+
+.product-promo-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6c757d;
+  margin: 0;
 }
 
 .add-to-cart-button,

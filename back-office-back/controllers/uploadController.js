@@ -10,8 +10,10 @@ class UploadController {
       }
 
       const type = req.params.type || 'general';
+      // Rediriger les éléments vers le dossier produits
+      const folderType = type === 'elements' ? 'produits' : type;
       const filename = req.file.filename;
-      const fileUrl = `/uploads/${type}/${filename}`;
+      const fileUrl = `/uploads/${folderType}/${filename}`;
 
       res.status(201).json({
         message: 'Image uploadée avec succès',
@@ -29,7 +31,9 @@ class UploadController {
   static async deleteImage(req, res) {
     try {
       const { type, filename } = req.params;
-      const filePath = path.join(__dirname, '..', 'uploads', type, filename);
+      // Rediriger les éléments vers le dossier produits
+      const folderType = type === 'elements' ? 'produits' : type;
+      const filePath = path.join(__dirname, '..', 'uploads', folderType, filename);
 
       // Vérifier si le fichier existe
       if (!fs.existsSync(filePath)) {
@@ -53,7 +57,9 @@ class UploadController {
   static async listImages(req, res) {
     try {
       const type = req.params.type || 'general';
-      const uploadPath = path.join(__dirname, '..', 'uploads', type);
+      // Rediriger les éléments vers le dossier produits
+      const folderType = type === 'elements' ? 'produits' : type;
+      const uploadPath = path.join(__dirname, '..', 'uploads', folderType);
 
       // Vérifier si le dossier existe
       if (!fs.existsSync(uploadPath)) {
@@ -71,7 +77,7 @@ class UploadController {
         })
         .map(file => ({
           filename: file,
-          url: `/uploads/${type}/${file}`,
+          url: `/uploads/${folderType}/${file}`,
           path: path.join(uploadPath, file)
         }));
 

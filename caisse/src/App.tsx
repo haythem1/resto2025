@@ -84,13 +84,14 @@ const App: React.FC = () => {
       .filter(item => item.stepType !== 'composition')
       .reduce((total, item) => total + (item.element.prix || 0), 0);
 
-    const totalPrice = (product.prix + supplementsPrice);
+    const basePrice = product.promo && product.prix_promo ? product.prix_promo : product.prix;
+    const totalPrice = (basePrice + supplementsPrice);
     const categoryId = getCategoryId(product);
 
     setCartItems(prev => {
       const existingItemIndex = prev.findIndex(
         item => item.product.id === product.id &&
-        JSON.stringify(item.selectedElements) === JSON.stringify(selectedElements)
+          JSON.stringify(item.selectedElements) === JSON.stringify(selectedElements)
       );
 
       if (existingItemIndex >= 0) {
@@ -121,13 +122,14 @@ const App: React.FC = () => {
         .filter(item => item.stepType !== 'composition')
         .reduce((total, item) => total + (item.element.prix || 0), 0);
 
-      const unitPrice = product.prix + supplementsPrice;
+      const basePrice = product.promo && product.prix_promo ? product.prix_promo : product.prix;
+      const unitPrice = basePrice + supplementsPrice;
       const totalPrice = unitPrice * editingCartItem.quantity;
 
       setCartItems(prev =>
         prev.map(item =>
           item.product.id === editingCartItem.product.id &&
-          JSON.stringify(item.selectedElements) === JSON.stringify(editingCartItem.selectedElements)
+            JSON.stringify(item.selectedElements) === JSON.stringify(editingCartItem.selectedElements)
             ? { ...item, product, selectedElements, totalPrice }
             : item
         )
@@ -438,6 +440,19 @@ const App: React.FC = () => {
                     selectedCategory={selectedSubCategory}
                     onSelectCategory={(c) => setSelectedSubCategory(c)}
                   />
+                  {/* Afficher aussi les produits de la catégorie parent si présents */}
+                  {selectedCategory.produits && selectedCategory.produits.length > 0 && (
+                    <div className="mt-4">
+                      <h5 className="mb-3">Produits de {selectedCategory.nom}</h5>
+                      <ProductList
+                        products={selectedCategory.produits}
+                        onSelectProduct={setSelectedProduct}
+                        onAddToCart={handleAddToCart}
+                        onBackToCategories={handleBackToCategories}
+                        columns={4}
+                      />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <ProductList
@@ -545,7 +560,7 @@ const App: React.FC = () => {
       {/* Overlay de chargement */}
       {orderSubmitting && (
         <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-             style={{ background: 'rgba(0,0,0,0.6)', zIndex: 3500 }}>
+          style={{ background: 'rgba(0,0,0,0.6)', zIndex: 3500 }}>
           <div className="bg-dark text-white p-4 rounded-3 d-flex align-items-center gap-3">
             <Spinner animation="border" size="sm" />
             <span>Envoi de la commande...</span>

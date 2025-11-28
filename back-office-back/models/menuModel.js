@@ -2,13 +2,34 @@ const pool = require('../config/database');
 
 class MenuModel {
   // Helper pour construire l'URL complète de l'image
-  static getImageUrl(filename, type = 'produits') {
-    if (!filename) return null;
-    if (filename.startsWith('http')) return filename;
-    if (filename.startsWith('/uploads')) {
-      return `${process.env.BASE_URL || 'http://localhost:5000'}${filename}`;
+  static getImageUrl(imagePath, folder) {
+    if (!imagePath) {
+      return `${process.env.BASE_URL || 'http://localhost:5000'}/uploads/image-coming-soon.png`;
     }
-    return `${process.env.BASE_URL || 'http://localhost:5000'}/uploads/${type}/${filename}`;
+
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+
+    const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+    return `${baseUrl}/uploads/${folder}/${imagePath}`;
+  }
+
+  // Helper pour calculer le prix promotionnel
+  static calculatePromoPrice(originalPrice, promo, promoType, promoValue) {
+    if (!promo || !promoType || !promoValue) {
+      return parseFloat(originalPrice);
+    }
+
+    if (promoType === 'percentage') {
+      // Réduction en pourcentage
+      return parseFloat(originalPrice) * (1 - parseFloat(promoValue) / 100);
+    } else if (promoType === 'fixed_price') {
+      // Prix fixe promotionnel
+      return parseFloat(promoValue);
+    }
+
+    return parseFloat(originalPrice);
   }
 
   // ==================== CATÉGORIES ====================
@@ -16,7 +37,11 @@ class MenuModel {
   static async getAllCategories() {
     const query = `
       SELECT * FROM categories
-      ORDER BY ordre ASC, id ASC
+      ORDER BY 
+        COALESCE(id_parent, id) ASC,
+        id_parent NULLS FIRST,
+        ordre ASC,
+        id ASC
     `;
     const result = await pool.query(query);
     return result.rows;
@@ -114,25 +139,25 @@ class MenuModel {
   }
 
   static async createCategory(data) {
-    const { id_parent = null, nom, image, promo = false, ordre = 0, etat = 1 } = data;
+    const { id_parent = null, nom, image, promo = false, promo_type = null, promo_value = null, ordre = 0, etat = 1 } = data;
     const query = `
-      INSERT INTO categories (id_parent, nom, image, promo, ordre, etat)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO categories (id_parent, nom, image, promo, promo_type, promo_value, ordre, etat)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
     `;
-    const result = await pool.query(query, [id_parent, nom, image, promo, ordre, etat]);
+    const result = await pool.query(query, [id_parent, nom, image, promo, promo_type, promo_value, ordre, etat]);
     return result.rows[0];
   }
 
   static async updateCategory(id, data) {
-    const { id_parent, nom, image, promo, ordre, etat } = data;
+    const { id_parent, nom, image, promo, promo_type, promo_value, ordre, etat } = data;
     const query = `
       UPDATE categories
-      SET id_parent = $1, nom = $2, image = $3, promo = $4, ordre = $5, etat = $6, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $7
+      SET id_parent = $1, nom = $2, image = $3, promo = $4, promo_type = $5, promo_value = $6, ordre = $7, etat = $8, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $9
       RETURNING *
     `;
-    const result = await pool.query(query, [id_parent, nom, image, promo, ordre, etat, id]);
+    const result = await pool.query(query, [id_parent, nom, image, promo, promo_type, promo_value, ordre, etat, id]);
     return result.rows[0];
   }
 
@@ -176,14 +201,16 @@ class MenuModel {
       image,
       prix,
       promo = false,
+      promo_type = null,
+      promo_value = null,
       description,
       ordre = 0,
       etat = 1
     } = data;
 
     const query = `
-      INSERT INTO produits (categorie_id, nom, image, prix, promo, description, ordre, etat)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO produits (categorie_id, nom, image, prix, promo, promo_type, promo_value, description, ordre, etat)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *
     `;
     const result = await pool.query(query, [
@@ -192,6 +219,8 @@ class MenuModel {
       image,
       prix,
       promo,
+      promo_type,
+      promo_value,
       description,
       ordre,
       etat
@@ -200,14 +229,14 @@ class MenuModel {
   }
 
   static async updateProduit(id, data) {
-    const { categorie_id, nom, image, prix, promo, description, ordre, etat } = data;
+    const { categorie_id, nom, image, prix, promo, promo_type, promo_value, description, ordre, etat } = data;
     const query = `
       UPDATE produits
-      SET categorie_id = $1, nom = $2, image = $3, prix = $4, promo = $5, description = $6, ordre = $7, etat = $8, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $9
+      SET categorie_id = $1, nom = $2, image = $3, prix = $4, promo = $5, promo_type = $6, promo_value = $7, description = $8, ordre = $9, etat = $10, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $11
       RETURNING *
     `;
-    const result = await pool.query(query, [categorie_id, nom, image, prix, promo, description, ordre, etat, id]);
+    const result = await pool.query(query, [categorie_id, nom, image, prix, promo, promo_type, promo_value, description, ordre, etat, id]);
     return result.rows[0];
   }
 
@@ -439,6 +468,11 @@ class MenuModel {
       promo: categorie.promo
     };
 
+    if (categorie.promo) {
+      categorieData.promo_type = categorie.promo_type;
+      categorieData.promo_value = categorie.promo_value;
+    }
+
     // Récupérer les sous-catégories
     const sousCategoriesResult = await client.query(`
       SELECT * FROM categories
@@ -467,7 +501,13 @@ class MenuModel {
       categorieData.produits = [];
 
       for (const produit of produitsResult.rows) {
-        const produitData = await this.buildProduitComplet(client, produit);
+        const produitData = await this.buildProduitComplet(
+          client,
+          produit,
+          categorie.promo,
+          categorie.promo_type,
+          categorie.promo_value
+        );
         categorieData.produits.push(produitData);
       }
     }
@@ -475,17 +515,40 @@ class MenuModel {
     return categorieData;
   }
 
-  static async buildProduitComplet(client, produit) {
+  static async buildProduitComplet(client, produit, categoriePromo = false, categoriePromoType = null, categoriePromoValue = null) {
+    const prixOriginal = parseFloat(produit.prix);
+
+    // Déterminer la promotion effective (produit ou héritée de la catégorie)
+    let effectivePromo = produit.promo;
+    let effectivePromoType = produit.promo_type;
+    let effectivePromoValue = produit.promo_value;
+
+    // Si le produit n'a pas de promotion propre, hériter de la catégorie
+    if (!produit.promo && categoriePromo && categoriePromoType && categoriePromoValue) {
+      effectivePromo = true;
+      effectivePromoType = categoriePromoType;
+      effectivePromoValue = categoriePromoValue;
+    }
+
+    const prixFinal = this.calculatePromoPrice(prixOriginal, effectivePromo, effectivePromoType, effectivePromoValue);
+
     const produitData = {
       id: produit.id,
       nom: produit.nom,
       categorie_id: produit.categorie_id,
       image: this.getImageUrl(produit.image, 'produits'),
-      prix: parseFloat(produit.prix),
-      promo: produit.promo,
+      prix: prixOriginal,
+      promo: effectivePromo,
       description: produit.description,
       steps: []
     };
+
+    // Ajouter les informations de promotion si applicable
+    if (effectivePromo && effectivePromoType && effectivePromoValue) {
+      produitData.promo_type = effectivePromoType;
+      produitData.promo_value = parseFloat(effectivePromoValue);
+      produitData.prix_promo = prixFinal;
+    }
 
     // Récupérer les compositions de base du produit
     const compositionsResult = await client.query(`
@@ -556,7 +619,7 @@ class MenuModel {
         const elementData = {
           id: element.id,
           nom: element.nom,
-          image: this.getImageUrl(element.image, 'elements'),
+          image: this.getImageUrl(element.image, 'produits'),
           description: element.description
         };
 

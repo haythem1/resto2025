@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import type{ Produit } from '../types';
+import type { Produit } from '../types';
 import CachedImage from './CachedImage';
 
 interface ProductListProps {
@@ -10,8 +10,8 @@ interface ProductListProps {
   columns?: number;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ 
-  products, 
+const ProductList: React.FC<ProductListProps> = ({
+  products,
   onSelectProduct,
   onAddToCart,
   onBackToCategories,
@@ -63,12 +63,12 @@ const ProductList: React.FC<ProductListProps> = ({
             ← Catégories
           </button>
           <label style={{ fontSize: '0.9rem', color: '#fff', background: 'transparent' }} htmlFor="columns-select">Colonnes:</label>
-          
+
         </div>
-      
+
       </div>
-      
-      <div 
+
+      <div
         className="products-grid-container"
         ref={scrollContainerRef}
         onScroll={handleScroll}
@@ -94,7 +94,17 @@ const ProductList: React.FC<ProductListProps> = ({
 
               <div className="product-info" onClick={() => handleProductClick(product)}>
                 <p className="product-name">{product.nom}</p>
-                <p className="product-price">{product.prix.toFixed(2)} DT</p>
+                {product.promo && product.prix_promo ? (
+                  <div className="product-price-container">
+                    <span className="product-price-promo">{Number(product.prix_promo).toFixed(2)} DT</span>
+                    <span className="product-price-original">{Number(product.prix).toFixed(2)} DT</span>
+                    {product.promo_type === 'percentage' && (
+                      <span className="product-promo-badge">-{product.promo_value}%</span>
+                    )}
+                  </div>
+                ) : (
+                  <p className="product-price">{Number(product.prix).toFixed(2)} DT</p>
+                )}
               </div>
             </div>
           ))}
